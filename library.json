@@ -1,0 +1,24 @@
+{
+  "name": "hx711_spi",
+  "version": "1.0.0",
+  "description": "Yet another hx711 driver, but with spi",
+  "keywords": "hx711, spi, driver",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/sash13/hx711_spi.git"
+  },
+  "authors":
+  [
+    {
+      "name": "Alex R",
+      "maintainer": true
+    }
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "SPI": "^2.0.0"
+  },
+  "frameworks": "arduino",
+  "platforms": "espressif32"
+}
