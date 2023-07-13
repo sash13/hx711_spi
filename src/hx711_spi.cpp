@@ -122,7 +122,7 @@ void HX711_SPI::set_gain(byte gain) {
 long HX711_SPI::read() {
 
     // Wait for the chip to become ready.
-    wait_ready();
+    //wait_ready();
 
     // Define structures for reading data into.
     unsigned long value = 0;
