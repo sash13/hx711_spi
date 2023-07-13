@@ -80,7 +80,7 @@ static byte lookup[] = {
 #define DOUT_MODE INPUT_PULLUP
 #endif
 
-SPIClass spi;
+SPIClass *spi = NULL;
 
 // HX711_SPI::HX711_SPI() {
 // }
@@ -92,12 +92,15 @@ void HX711_SPI::begin(byte dout, byte pd_sck, byte gain) {
     PD_SCK = pd_sck;
     DOUT = dout;
 
-    spi.begin();
-    spi.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE1));
-    //pinMode(PD_SCK, OUTPUT);
-    //pinMode(DOUT, DOUT_MODE);
+    pinMode(PD_SCK, OUTPUT);
+    pinMode(DOUT, DOUT_MODE);
 
+    spi = new SPIClass(VSPI);
+    spi->begin();
+    spi->beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE1));
     set_gain(gain);
+
+    digitalWrite(PD_SCK, LOW);
 }
 
 bool HX711_SPI::is_ready() {
@@ -122,7 +125,7 @@ void HX711_SPI::set_gain(byte gain) {
 long HX711_SPI::read() {
 
     // Wait for the chip to become ready.
-    //wait_ready();
+    wait_ready();
 
     // Define structures for reading data into.
     unsigned long value = 0;
@@ -159,7 +162,7 @@ long HX711_SPI::read() {
     // noInterrupts();
     // #endif
 
-    data[0] = spi.transfer(SIGNAL_LOW);
+    data[0] = spi->transfer(SIGNAL_LOW);
     if (data[0] & 0x01 == 1) {
         return static_cast<long>(0);
     }
@@ -173,7 +176,7 @@ long HX711_SPI::read() {
     data[5] = CLOCK;
     data[6] = GAIN;
 
-    spi.transfer(data, 7);
+    spi->transfer(data, 7);
 
     // Set the channel and the gain factor for the next reading using the clock pin.
     // for (unsigned int i = 0; i < GAIN; i++) {
