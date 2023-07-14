@@ -88,7 +88,7 @@ SPIClass *spi = NULL;
 HX711_SPI::~HX711_SPI() {
 }
 
-void HX711_SPI::begin(byte dout, byte pd_sck, byte gain) {
+void HX711_SPI::begin(byte dout, byte pd_sck, byte gain, int speed) {
     PD_SCK = pd_sck;
     DOUT = dout;
 
@@ -97,7 +97,7 @@ void HX711_SPI::begin(byte dout, byte pd_sck, byte gain) {
 
     spi = new SPIClass(VSPI);
     spi->begin();
-    spi->beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE1));
+    spi->beginTransaction(SPISettings(speed, MSBFIRST, SPI_MODE1));
     set_gain(gain);
 
     digitalWrite(PD_SCK, LOW);

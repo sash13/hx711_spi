@@ -15,7 +15,7 @@ void setup() {
 void loop() {
 
   if (scale.is_ready()) {
-    long reading = scale.read();
+    long reading = scale.read_average();
     Serial.print("HX711 reading: ");
     Serial.println(reading);
   } else {
