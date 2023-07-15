@@ -45,6 +45,9 @@ public:
 		// returns an average reading; times = how many times to read
 		long read_average(byte times = 10);
 
+		// returns an trunc mean reading; times = how many times to read, trim = how many trim from start and end
+		long read_trunc_mean(byte times = 10, byte trim = 1);
+
 		// returns (read_average() - OFFSET), that is the current value without the tare weight; times = how many readings to do
 		double get_value(byte times = 1);
 

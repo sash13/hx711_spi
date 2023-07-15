@@ -15,9 +15,17 @@ void setup() {
 void loop() {
 
   if (scale.is_ready()) {
-    long reading = scale.read_average();
+    //long reading = scale.read_average();
+    long reading = scale.read_trunc_mean(10, 2);
+    long reading2 = scale.read_average();
+    long reading3 = scale.read();
+
     Serial.print("HX711 reading: ");
-    Serial.println(reading);
+    Serial.print(reading);
+    Serial.print(",");
+    Serial.print(reading2);
+    Serial.print(",");
+    Serial.println(reading3);
   } else {
     Serial.println("HX711 not found.");
   }

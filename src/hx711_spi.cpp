@@ -8,6 +8,7 @@
  *
 **/
 #include <Arduino.h>
+#include <ArduinoSort.h>
 #include "HX711_spi.h"
 
 #define GAIN128      0b10000000
@@ -271,6 +272,32 @@ long HX711_SPI::read_average(byte times) {
         delay(0);
     }
     return sum / times;
+}
+
+long HX711_SPI::read_trunc_mean(byte times, byte trim) {
+    byte i, trimX2 = trim * 2;
+    long sum = 0;
+    long data[times] = { 0 };
+
+    if (trimX2 > times)
+    {
+        return 0;
+    }
+
+    for (i = 0; i < times; i++) {
+        data[i] = read();
+        // Probably will do no harm on AVR but will feed the Watchdog Timer (WDT) on ESP.
+        // https://github.com/bogde/HX711_SPI/issues/73
+        delay(0);
+    }
+
+    sortArray(data, times);
+
+    for (i = trim; i < times-trim; i++) {
+        sum += data[i];
+    }
+
+    return sum / (times - trimX2);
 }
 
 double HX711_SPI::get_value(byte times) {
