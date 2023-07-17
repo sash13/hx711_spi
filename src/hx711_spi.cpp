@@ -274,27 +274,46 @@ long HX711_SPI::read_average(byte times) {
     return sum / times;
 }
 
-long HX711_SPI::read_trunc_mean(byte times, byte trim) {
+long HX711_SPI::read_trunc_mean(byte times, byte trim, byte slide) {
     byte i, trimX2 = trim * 2;
     long sum = 0;
-    long data[times] = { 0 };
+    long buffer[times] = { 0 };
 
     if (trimX2 > times)
     {
         return 0;
     }
 
-    for (i = 0; i < times; i++) {
-        data[i] = read();
-        // Probably will do no harm on AVR but will feed the Watchdog Timer (WDT) on ESP.
-        // https://github.com/bogde/HX711_SPI/issues/73
-        delay(0);
+    if (slide)
+    {
+        long _tmp = read();
+        buffer_average.push(_tmp);
+
+        if(buffer_average.isFull())
+        {
+            for (decltype(buffer_average)::index_t ii = 0; ii < buffer_average.size(); ii++) {
+                buffer[ii] = buffer_average[ii];
+            }
+        }
+        else
+        {
+            return 0;//_tmp;
+        }
+    }
+    else
+    {
+        for (i = 0; i < times; i++) {
+            buffer[i] = read();
+            // Probably will do no harm on AVR but will feed the Watchdog Timer (WDT) on ESP.
+            // https://github.com/bogde/HX711_SPI/issues/73
+            delay(0);
+        }
     }
 
-    sortArray(data, times);
+    sortArray(buffer, times);
 
     for (i = trim; i < times-trim; i++) {
-        sum += data[i];
+        sum += buffer[i];
     }
 
     return sum / (times - trimX2);

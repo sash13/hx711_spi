@@ -18,7 +18,8 @@
   "license": "MIT",
   "dependencies": {
     "SPI": "^2.0.0",
-    "ArduinoSort": "https://github.com/emilv/ArduinoSort.git"
+    "ArduinoSort": "https://github.com/emilv/ArduinoSort.git",
+    "CircularBuffer": "https://github.com/rlogiacco/CircularBuffer.git"
   },
   "frameworks": "arduino",
   "platforms": "espressif32"

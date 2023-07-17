@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <SPI.h>
+#include <CircularBuffer.h>
 
 class HX711_SPI
 {
@@ -12,6 +13,7 @@ class HX711_SPI
 		byte GAIN;		// amplification factor
 		long OFFSET = 0;	// used for tare weight
 		float SCALE = 1;	// used to return weight in grams, kg, ounces, whatever
+		CircularBuffer<long,10> buffer_average;
 public:
     // Empty constructor for creating arrays
     HX711_SPI(){};
@@ -45,8 +47,9 @@ public:
 		// returns an average reading; times = how many times to read
 		long read_average(byte times = 10);
 
-		// returns an trunc mean reading; times = how many times to read, trim = how many trim from start and end
-		long read_trunc_mean(byte times = 10, byte trim = 1);
+		// returns an trunc mean reading; times = how many times to read, trim = how many trim from start and end, slide - sliding window for speedup
+		long read_trunc_mean(byte times = 10, byte trim = 1, byte slide = 0);
+
 
 		// returns (read_average() - OFFSET), that is the current value without the tare weight; times = how many readings to do
 		double get_value(byte times = 1);
